@@ -73,30 +73,40 @@ function Start-Installation {
                 else {
                     Write-Host "Zephyr 目录已存在，跳过克隆..." -ForegroundColor Yellow
                 }
+                git checkout zephyr
 
-                Set-Location zephyr
+                # 如果您想将名为 "zephyr" 的文件夹重命名为其他名称，例如 "zephyrproject"
+                if (Test-Path "zephyr" -PathType Container) {
+                    # 检查目标文件夹是否已存在
+                    if (Test-Path "zephyrproject" -PathType Container) {
+                        Write-Host "目标文件夹 'zephyrproject' 已存在，无法重命名..." -ForegroundColor $Theme.Warning
+                    }
+                    else {
+                        Write-Host "正在重命名 zephyr 文件夹为 zephyrproject..." -ForegroundColor Green
+                        Rename-Item -Path "zephyr" -NewName "zephyrproject"
+                    }
+                }
+                Set-Location zephyrproject
 
-                Write-Host "`n正在安装编译工具..." -ForegroundColor Green
+                # Write-Host "`n正在安装编译工具..." -ForegroundColor Green
                 scoop install ./app/dtc.json 
                 scoop install ./app/gperf.json 
-                scoop install ./app/nrfutil.json
+                scoop install ./app/strawberryperl.json
 
                 # 安装nRF工具
-                Write-Host "`n正在安装 nRF 开发工具..." -ForegroundColor Green
-                Write-Host "安装 BLE Sniffer..." -ForegroundColor Yellow
-                nrfutil install ble-sniffer
+                Write-Host "`n正在安装 west 开发工具..." -ForegroundColor Green
 
                 Write-Host "安装工具链管理器..." -ForegroundColor Yellow
-                nrfutil install toolchain-manager
+                wget https://github.com/zephyrproject-rtos/sdk-ng/releases/download/v0.17.0/zephyr-sdk-0.17.0_windows-x86_64.7z --no-check-certificate
+                7z x zephyr-sdk-0.17.0_windows-x86_64.7z
 
                 Write-Host "配置工具链安装目录..." -ForegroundColor Yellow
-                nrfutil toolchain-manager config --set install-dir=.
-
-                Write-Host "安装 nRF Connect SDK v2.9.0..." -ForegroundColor Yellow
-                nrfutil toolchain-manager install --ncs-version v2.9.0
+                Set-Location zephyr-sdk-0.17.0
+                ./setup.cmd
+                Set-Location ..
 
                 Write-Host "`n正在配置 Python 环境..." -ForegroundColor Green
-                uv python install 3.11
+                uv python install 3.10
                 uv venv
                 Write-Host "正在激活虚拟环境..." -ForegroundColor Green
                 .venv\Scripts\activate  
@@ -105,7 +115,7 @@ function Start-Installation {
                 uv pip install west
 
                 Write-Host "`n初始化 West 工作区..." -ForegroundColor Green
-                west init -m https://github.com/nrfconnect/sdk-nrf --mr v2.9.0
+                west init zephyrproject
 
             }
             '2' {
@@ -114,10 +124,12 @@ function Start-Installation {
                 
                 Write-Host "`n正在更新 West..." -ForegroundColor Green
                 Write-Host "这可能需要一段时间，请保持网络稳定..." -ForegroundColor Yellow
+                Set-Location zephyrproject
                 west update
 
                 Write-Host "`n安装项目依赖..." -ForegroundColor Green
-                uv pip install -r zephyr/scripts/requirements.txt -r nrf/scripts/requirements.txt -r bootloader/mcuboot/scripts/requirements.txt
+                west packages pip --install
+                uv pip install -r zephyr/scripts/requirements.txt -r bootloader/mcuboot/scripts/requirements.txt
 
                 Write-Host "`n配置 West Cmake环境..." -ForegroundColor Yellow
                 west zephyr-export
