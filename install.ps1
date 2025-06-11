@@ -75,23 +75,22 @@ function Start-Installation {
                 }
                 git checkout zephyr
 
-                # 如果您想将名为 "zephyr" 的文件夹重命名为其他名称，例如 "zephyrproject"
+                # 如果您想将名为 "zephyr" 的文件夹重命名为其他名称，例如 "zephyr"
                 if (Test-Path "zephyr" -PathType Container) {
                     # 检查目标文件夹是否已存在
-                    if (Test-Path "zephyrproject" -PathType Container) {
-                        Write-Host "目标文件夹 'zephyrproject' 已存在，无法重命名..." -ForegroundColor $Theme.Warning
+                    if (Test-Path "zephyr" -PathType Container) {
+                        Write-Host "目标文件夹 'zephyr' 已存在，无法重命名..." -ForegroundColor $Theme.Warning
                     }
                     else {
-                        Write-Host "正在重命名 zephyr 文件夹为 zephyrproject..." -ForegroundColor Green
-                        Rename-Item -Path "zephyr" -NewName "zephyrproject"
+                        Write-Host "正在重命名 zephyr 文件夹为 zephyr..." -ForegroundColor Green
+                        Rename-Item -Path "zephyr" -NewName "zephyr"
                     }
                 }
-                Set-Location zephyrproject
+                Set-Location zephyr
 
                 # Write-Host "`n正在安装编译工具..." -ForegroundColor Green
                 scoop install ./app/dtc.json 
                 scoop install ./app/gperf.json 
-                scoop install ./app/strawberryperl.json
 
                 # 安装nRF工具
                 Write-Host "`n正在安装 west 开发工具..." -ForegroundColor Green
@@ -115,7 +114,7 @@ function Start-Installation {
                 uv pip install west
 
                 Write-Host "`n初始化 West 工作区..." -ForegroundColor Green
-                west init zephyrproject
+                west init
 
             }
             '2' {
@@ -124,7 +123,7 @@ function Start-Installation {
                 
                 Write-Host "`n正在更新 West..." -ForegroundColor Green
                 Write-Host "这可能需要一段时间，请保持网络稳定..." -ForegroundColor Yellow
-                Set-Location zephyrproject
+                Set-Location zephyr
                 west update
 
                 Write-Host "`n安装项目依赖..." -ForegroundColor Green
