@@ -15,3 +15,25 @@ Set-ExecutionPolicy -ExecutionPolicy RemoteSigned -Scope CurrentUser
 ```
 
 ## 忘记要Star了，点了再走哦~
+
+scoop install git
+scoop install openocd cmake ninja uv wget 7zip zstd python
+scoop install https://raw.githubusercontent.com/wentywenty/zephyr/zephyr/app/gperf.json
+scoop install https://raw.githubusercontent.com/wentywenty/zephyr/zephyr/app/dtc.json
+
+mkdir zephyr
+cd zephyr
+uv python install 3.10
+uv venv
+.venv\Scripts\activate  
+
+uv pip install west pyocd
+
+west init
+west update
+
+west zephyr-export
+
+uv pip install -r zephyr/scripts/requirements.txt -r bootloader/mcuboot/scripts/requirements.txt
+
+west sdk install
