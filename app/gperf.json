@@ -1,31 +1,44 @@
 {
-    "version": "3.1",
+    "version": "3.3",
     "description": "GNU perfect hash function generator",
     "homepage": "https://www.gnu.org/software/gperf/",
     "license": "GPL-3.0-or-later",
-    "architecture": {
-        "64bit": {
-            "url": "https://raw.githubusercontent.com/carlescufi/chocolatey-packages/master/packages/gperf/tools/gperf-3.1-win64_x64.zip",
-            "hash": "sha256:5cf7adac20cdcc1ac2ca31816b0e2e261781d88c3d57049f7eae1fb85119f237"
-        },
-        "32bit": {
-            "url": "https://raw.githubusercontent.com/carlescufi/chocolatey-packages/master/packages/gperf/tools/gperf-3.1-win32_x32.zip",
-            "hash": "sha256:bc2ba169cf12604faf2551dc5a2e79298401c295cab6a1c29714d20bb9ddc0e9"
-        }
-    },
-    "bin": "gperf.exe",
+    "url": [
+        "https://github.com/wentywenty/gperf-win/raw/main/gperf.exe",
+        "https://repo.msys2.org/msys/x86_64/mingw-w64-cross-gcc-15.1.0-1-x86_64.pkg.tar.zst",
+        "https://repo.msys2.org/msys/x86_64/mingw-w64-cross-mingw32-winpthreads-12.0.0.r731.g2ca6f1348-1-x86_64.pkg.tar.zst",
+        "https://mirror.msys2.org/msys/x86_64/gcc-libs-13.3.0-1-x86_64.pkg.tar.zst"
+    ],
+    "hash": [
+        "sha256:cd1e0b0fd86a79718d0386571181658c9d1394d18022ee16d24551c2473d36b8",
+        "sha256:398b03aa693d6fbe2722dc88fec628c9ed73a0481c173d18371477ab674e65ac",
+        "sha256:a407d39ff53c23590ea5cea537c3aa892a661a33d75047b5c39e1cac8b203237",
+        "sha256:38b6cd7df7476ce8e1b095f8f5901f93427fa901135501231295263ba171a36d"
+    ],
+    "bin": [
+        "gperf.exe"
+    ],
     "checkver": {
-        "github": "https://github.com/carlescufi/chocolatey-packages",
-        "regex": "gperf-([\\d.]+)-win64_x64\\.zip"
+        "url": "https://api.github.com/repos/wentywenty/gperf-win/contents/",
+        "jsonpath": "$[?(@.name == 'gperf.exe')].sha",
+        "regex": "(.{7})"
     },
     "autoupdate": {
-        "architecture": {
-            "64bit": {
-                "url": "https://raw.githubusercontent.com/carlescufi/chocolatey-packages/master/packages/gperf/tools/gperf-$version-win64_x64.zip"
-            },
-            "32bit": {
-                "url": "https://raw.githubusercontent.com/carlescufi/chocolatey-packages/master/packages/gperf/tools/gperf-$version-win32_x32.zip"
-            }
-        }
-    }
+        "url": [
+            "https://github.com/wentywenty/gperf-win/raw/main/gperf.exe",
+            "https://repo.msys2.org/msys/x86_64/mingw-w64-cross-gcc-15.1.0-1-x86_64.pkg.tar.zst",
+            "https://repo.msys2.org/msys/x86_64/mingw-w64-cross-mingw32-winpthreads-12.0.0.r731.g2ca6f1348-1-x86_64.pkg.tar.zst",
+            "https://mirror.msys2.org/msys/x86_64/gcc-libs-13.3.0-1-x86_64.pkg.tar.zst"
+        ],
+        "hash": [
+            "skip",
+            "skip",
+            "skip",
+            "$url4"
+        ]
+    },
+    "notes": [
+        "gperf.exe is downloaded directly from GitHub repository.",
+        "Additional MSYS2 packages are downloaded as dependencies."
+    ]
 }
